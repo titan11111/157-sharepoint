@@ -1,0 +1,940 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>法人営業ナレッジポータル｜SharePoint実機再現モック</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Segoe UI', 'Yu Gothic UI', 'Meiryo', sans-serif;
+    background: #f3f2f1;
+    color: #201f1e;
+    font-size: 14px;
+    line-height: 1.5;
+  }
+
+  /* ══════════════════════════════════════
+     M365 スイートバー（最上部・黒帯）
+     ※ SharePoint実機の最上部に必ず存在
+  ══════════════════════════════════════ */
+  .suite-bar {
+    height: 48px;
+    background: #1b1a19;
+    display: flex;
+    align-items: center;
+    padding: 0 12px;
+    gap: 8px;
+  }
+  .suite-waffle {
+    width: 32px;
+    height: 32px;
+    display: grid;
+    grid-template-columns: repeat(3,7px);
+    gap: 2px;
+    padding: 7px;
+    cursor: pointer;
+  }
+  .suite-waffle span {
+    background: #c8c6c4;
+    border-radius: 1px;
+    display: block;
+  }
+  .suite-logo {
+    color: #c8c6c4;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    margin-left: 4px;
+  }
+  .suite-logo em { color: #c79a42; font-style: normal; }
+  .suite-search {
+    margin-left: auto;
+    margin-right: 8px;
+    display: flex;
+    align-items: center;
+    background: #3b3a39;
+    border-radius: 4px;
+    padding: 5px 12px;
+    gap: 8px;
+    color: #c8c6c4;
+    font-size: 13px;
+    min-width: 220px;
+  }
+  .suite-icons {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    color: #c8c6c4;
+    font-size: 16px;
+  }
+  .suite-icons span {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  .suite-icons span:hover { background: #3b3a39; }
+  .suite-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #c79a42, #a07830);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    margin-left: 4px;
+  }
+
+  /* ══════════════════════════════════════
+     サイトヘッダー
+     ※ SharePointのコミュニケーションサイト標準
+  ══════════════════════════════════════ */
+  .site-header {
+    background: #ffffff;
+    border-bottom: 1px solid #edebe9;
+    padding: 0 24px;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .site-logo {
+    width: 36px;
+    height: 36px;
+    background: #c79a42;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 18px;
+    flex-shrink: 0;
+  }
+  .site-name {
+    font-size: 16px;
+    font-weight: 600;
+    color: #201f1e;
+  }
+
+  /* ══════════════════════════════════════
+     レイアウト
+  ══════════════════════════════════════ */
+  .layout {
+    display: flex;
+    min-height: calc(100vh - 104px);
+  }
+
+  /* ══════════════════════════════════════
+     左ナビ（SharePoint Site Navigation）
+     ※ 実機ではサイト設定から編集。幅固定。
+  ══════════════════════════════════════ */
+  .left-nav {
+    width: 208px;
+    flex-shrink: 0;
+    background: #ffffff;
+    border-right: 1px solid #edebe9;
+    padding: 8px 0;
+    display: flex;
+    flex-direction: column;
+  }
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 16px;
+    font-size: 14px;
+    color: #605e5c;
+    cursor: pointer;
+    border-left: 3px solid transparent;
+    min-height: 36px;
+  }
+  .nav-item:hover {
+    background: #f3f2f1;
+    color: #201f1e;
+  }
+  .nav-item.active {
+    color: #c79a42;
+    border-left-color: #c79a42;
+    background: #fdf7ed;
+    font-weight: 600;
+  }
+  .nav-icon { width: 16px; text-align: center; font-size: 14px; flex-shrink: 0; }
+  .nav-divider { height: 1px; background: #edebe9; margin: 8px 0; }
+  .nav-bottom {
+    margin-top: auto;
+    border-top: 1px solid #edebe9;
+    padding: 12px 16px;
+    font-size: 12px;
+    color: #605e5c;
+  }
+  .nav-bottom-name { font-weight: 600; color: #201f1e; font-size: 13px; margin-bottom: 2px; }
+  .nav-bottom-sub { line-height: 1.8; }
+
+  /* ══════════════════════════════════════
+     ページ本体
+  ══════════════════════════════════════ */
+  .page-body {
+    flex: 1;
+    display: flex;
+    gap: 0;
+    min-width: 0;
+  }
+
+  /* ── メインコンテンツ ── */
+  .main-content {
+    flex: 1;
+    padding: 0;
+    min-width: 0;
+  }
+
+  /* ══════════════════════════════════════
+     Hero ウェブパーツ
+     ※ 実機：画像＋テキスト＋CTAボタン1つ。
+       スライドドット付き（最大5枚）。
+       画像はアップロードした写真を使用。
+  ══════════════════════════════════════ */
+  .hero-wp {
+    position: relative;
+    height: 280px;
+    background: linear-gradient(100deg, #1a2a3a 0%, #2a3a50 55%, #1e3040 100%);
+    overflow: hidden;
+  }
+  .hero-img-overlay {
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(to right, rgba(20,30,45,0.92) 45%, rgba(20,30,45,0.3) 100%),
+      url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="4" height="4"><rect width="4" height="4" fill="%23203040"/><circle cx="2" cy="2" r="1" fill="%23253545" opacity="0.5"/></svg>');
+  }
+  .hero-gold-accent {
+    position: absolute;
+    right: 80px;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: linear-gradient(to bottom, transparent, #c79a42 30%, #c79a42 70%, transparent);
+    opacity: 0.4;
+  }
+  .hero-content {
+    position: relative;
+    padding: 48px 48px;
+    max-width: 560px;
+  }
+  .hero-eyebrow {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    color: #c79a42;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+  .hero-title {
+    font-size: 26px;
+    font-weight: 700;
+    color: #ffffff;
+    line-height: 1.3;
+    margin-bottom: 10px;
+  }
+  .hero-desc {
+    font-size: 13px;
+    color: rgba(255,255,255,0.7);
+    margin-bottom: 24px;
+    line-height: 1.6;
+  }
+  /* Hero CTAボタン: SharePoint実機の標準ボタンスタイル */
+  .hero-cta {
+    display: inline-block;
+    background: #c79a42;
+    color: #ffffff;
+    font-size: 14px;
+    font-weight: 600;
+    padding: 10px 24px;
+    border-radius: 2px;
+    cursor: pointer;
+    border: none;
+    letter-spacing: 0.2px;
+  }
+  .hero-dots {
+    position: absolute;
+    bottom: 16px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 8px;
+  }
+  .hero-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.3);
+  }
+  .hero-dot.active { background: #c79a42; }
+
+  /* ══════════════════════════════════════
+     セクション（白背景）
+     ※ SharePoint実機のセクション背景は
+       「白」「薄グレー」の2択のみ
+  ══════════════════════════════════════ */
+  .section-white { background: #ffffff; padding: 32px 40px; }
+  .section-gray  { background: #f3f2f1; padding: 32px 40px; }
+
+  /* セクション見出し: SharePoint Text Webパーツ標準H2相当 */
+  .section-heading {
+    font-size: 20px;
+    font-weight: 700;
+    color: #201f1e;
+    margin-bottom: 4px;
+  }
+  .section-sub {
+    font-size: 13px;
+    color: #605e5c;
+    margin-bottom: 20px;
+  }
+  .section-divider {
+    height: 1px;
+    background: #edebe9;
+    margin-bottom: 20px;
+  }
+
+  /* ══════════════════════════════════════
+     Lists ギャラリービュー（研修カード）
+     ※ SharePoint実機の制約を正確に再現：
+       ・画像上にバッジ重ね → 不可
+       ・カスタムボタン → 不可
+       ・タイトルがリンク（クリックで詳細ページへ）
+       ・メタ情報はテキスト表示のみ
+       ・「必須」はタイトル内またはフィールドで表示
+  ══════════════════════════════════════ */
+  .list-filter-bar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+  .list-filter-label { font-size: 13px; color: #605e5c; }
+  /* SharePoint Lists の標準ビュー切り替えドロップダウン */
+  .list-filter-select {
+    padding: 4px 8px;
+    border: 1px solid #8a8886;
+    border-radius: 2px;
+    font-size: 13px;
+    color: #201f1e;
+    background: #ffffff;
+    cursor: pointer;
+    font-family: inherit;
+  }
+
+  /* ギャラリーグリッド: Lists 標準の3列 */
+  .gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+  }
+
+  /* Lists ギャラリーカード: 実機の見た目を正確に再現 */
+  .gallery-card {
+    background: #ffffff;
+    border: 1px solid #edebe9;
+    border-radius: 2px;
+    overflow: hidden;
+    cursor: pointer;
+  }
+  .gallery-card:hover {
+    box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+    border-color: #c8c6c4;
+  }
+  /* サムネイル: Lists の画像列。枠いっぱいに表示。オーバーレイは不可。 */
+  .gallery-thumb {
+    height: 130px;
+    overflow: hidden;
+    position: relative;
+  }
+  .gallery-thumb-inner {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 40px;
+    color: rgba(255,255,255,0.5);
+  }
+  /* カード本体: Lists 標準フィールド表示 */
+  .gallery-card-body {
+    padding: 10px 12px 12px;
+  }
+  /* カテゴリフィールド（選択肢列）: テキスト表示のみ */
+  .gallery-card-category {
+    font-size: 11px;
+    font-weight: 700;
+    color: #c79a42;
+    letter-spacing: 0.5px;
+    margin-bottom: 4px;
+    text-transform: uppercase;
+  }
+  .gallery-card-required {
+    display: inline;
+    color: #d13438;
+    font-size: 11px;
+    font-weight: 700;
+    margin-left: 6px;
+  }
+  /* タイトル: クリックで詳細ページへ遷移するリンク（SharePoint Lists 標準） */
+  .gallery-card-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: #0078d4;
+    text-decoration: none;
+    display: block;
+    margin-bottom: 6px;
+    line-height: 1.4;
+  }
+  .gallery-card-title:hover { text-decoration: underline; }
+  /* 所要時間フィールド（数値列） */
+  .gallery-card-meta {
+    font-size: 12px;
+    color: #605e5c;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  /* ══════════════════════════════════════
+     News ウェブパーツ（今週のおすすめ）
+     ※ 実機：投稿したNewsページをカードで表示
+       カテゴリ・日付・サムネイル・タイトルのみ
+  ══════════════════════════════════════ */
+  .news-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+  }
+  .news-card {
+    background: #ffffff;
+    border: 1px solid #edebe9;
+    border-radius: 2px;
+    overflow: hidden;
+    cursor: pointer;
+  }
+  .news-card:hover { box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+  .news-thumb {
+    height: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+  }
+  .news-body { padding: 10px 12px 12px; }
+  .news-category {
+    font-size: 11px;
+    font-weight: 700;
+    color: #605e5c;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 4px;
+  }
+  .news-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: #201f1e;
+    margin-bottom: 4px;
+    line-height: 1.4;
+  }
+  .news-date { font-size: 11px; color: #a19f9d; }
+
+  /* ══════════════════════════════════════
+     右サイドバー
+  ══════════════════════════════════════ */
+  .right-sidebar {
+    width: 268px;
+    flex-shrink: 0;
+    border-left: 1px solid #edebe9;
+    background: #ffffff;
+  }
+
+  /* ── お知らせ（News Webパーツ・リスト表示） ── */
+  .sidebar-wp {
+    padding: 20px 16px;
+    border-bottom: 1px solid #edebe9;
+  }
+  .sidebar-wp-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: #201f1e;
+    margin-bottom: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .sidebar-wp-link {
+    font-size: 12px;
+    color: #0078d4;
+    font-weight: 400;
+    cursor: pointer;
+    text-decoration: none;
+  }
+  .sidebar-wp-link:hover { text-decoration: underline; }
+
+  /* News リスト表示（実機のコンパクトレイアウト） */
+  .news-list-item {
+    display: flex;
+    gap: 10px;
+    padding: 8px 0;
+    border-bottom: 1px solid #f3f2f1;
+    cursor: pointer;
+  }
+  .news-list-item:last-child { border-bottom: none; }
+  .news-list-thumb {
+    width: 48px;
+    height: 36px;
+    background: #f3f2f1;
+    border-radius: 2px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+  }
+  .news-list-body {}
+  .news-list-title {
+    font-size: 12px;
+    font-weight: 600;
+    color: #201f1e;
+    line-height: 1.4;
+    margin-bottom: 2px;
+  }
+  .news-list-date { font-size: 11px; color: #a19f9d; }
+  /* NEWバッジ: SharePoint News の「新着」ラベル */
+  .badge-new {
+    display: inline-block;
+    background: #c79a42;
+    color: #fff;
+    font-size: 9px;
+    font-weight: 700;
+    padding: 1px 5px;
+    border-radius: 2px;
+    margin-right: 4px;
+    vertical-align: middle;
+  }
+
+  /* ── 人気研修TOP3（Quick Links・リスト形式） ── */
+  .quicklinks-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 7px 0;
+    border-bottom: 1px solid #f3f2f1;
+    cursor: pointer;
+  }
+  .quicklinks-item:last-child { border-bottom: none; }
+  .quicklinks-rank {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 700;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+  .rank-1 { background: #c79a42; color: #fff; }
+  .rank-2 { background: #8a8886; color: #fff; }
+  .rank-3 { background: #a07030; color: #fff; }
+  .quicklinks-text {
+    font-size: 13px;
+    color: #0078d4;
+    line-height: 1.4;
+    flex: 1;
+  }
+  .quicklinks-text:hover { text-decoration: underline; }
+
+  /* ── FAQ（Highlighted Content・リスト形式） ── */
+  .faq-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px solid #f3f2f1;
+    font-size: 13px;
+    color: #0078d4;
+    cursor: pointer;
+  }
+  .faq-item:last-child { border-bottom: none; }
+  .faq-item:hover { text-decoration: underline; }
+  .faq-arrow { color: #8a8886; font-size: 12px; flex-shrink: 0; margin-left: 8px; }
+
+  /* ══════════════════════════════════════
+     凡例バー（このモックの説明用）
+  ══════════════════════════════════════ */
+  .legend-bar {
+    background: #fff4ce;
+    border-top: 2px solid #c79a42;
+    padding: 10px 40px;
+    font-size: 12px;
+    color: #605e5c;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    align-items: center;
+  }
+  .legend-bar strong { color: #201f1e; }
+
+  /* サムネイル背景色 */
+  .t1 { background: linear-gradient(135deg,#1a3a5c,#2e5a8c); }
+  .t2 { background: linear-gradient(135deg,#1a2a4c,#3a5a7c); }
+  .t3 { background: linear-gradient(135deg,#2c3a4c,#4a6a7c); }
+  .t4 { background: linear-gradient(135deg,#2a3a2c,#3a5a3c); }
+  .t5 { background: linear-gradient(135deg,#3a2a3a,#5a3a5a); }
+  .t6 { background: linear-gradient(135deg,#1c2c4c,#2c4c6c); }
+  .tn1 { background: #dff6dd; }
+  .tn2 { background: #ddf4ff; }
+  .tn3 { background: #fdf2d0; }
+</style>
+</head>
+<body>
+
+<!-- ══ M365 スイートバー ══ -->
+<div class="suite-bar">
+  <div class="suite-waffle">
+    <span></span><span></span><span></span>
+    <span></span><span></span><span></span>
+    <span></span><span></span><span></span>
+  </div>
+  <div class="suite-logo">Microsoft <em>365</em></div>
+  <div class="suite-search">🔍 &nbsp;このサイトを検索</div>
+  <div class="suite-icons">
+    <span>💬</span><span>🔔</span><span>⚙</span><span>?</span>
+  </div>
+  <div class="suite-avatar">田</div>
+</div>
+
+<!-- ══ サイトヘッダー ══ -->
+<div class="site-header">
+  <div class="site-logo">⬡</div>
+  <div class="site-name">法人営業ナレッジポータル</div>
+</div>
+
+<!-- ══ ページ全体 ══ -->
+<div class="layout">
+
+  <!-- ── 左ナビ（Site Navigation）── -->
+  <nav class="left-nav">
+    <div class="nav-item active">
+      <span class="nav-icon">🏠</span>ホーム
+    </div>
+    <div class="nav-item">
+      <span class="nav-icon">⭐</span>今月の必須研修
+    </div>
+    <div class="nav-item">
+      <span class="nav-icon">📈</span>提案力強化
+    </div>
+    <div class="nav-item">
+      <span class="nav-icon">🏥</span>医療法人攻略
+    </div>
+    <div class="nav-item">
+      <span class="nav-icon">👥</span>相続・事業承継
+    </div>
+    <div class="nav-divider"></div>
+    <div class="nav-item">
+      <span class="nav-icon">🛡</span>コンプライアンス
+    </div>
+    <div class="nav-item">
+      <span class="nav-icon">👔</span>管理職向け
+    </div>
+    <div class="nav-divider"></div>
+    <div class="nav-item">
+      <span class="nav-icon">☰</span>全研修一覧
+    </div>
+    <div class="nav-item">
+      <span class="nav-icon">❓</span>FAQ
+    </div>
+    <div class="nav-item">
+      <span class="nav-icon">✉</span>お問い合わせ
+    </div>
+    <div class="nav-bottom">
+      <div class="nav-bottom-name">研修担当</div>
+      <div class="nav-bottom-sub">
+        営業推進部<br>
+        training@company.co.jp<br>
+        03-1234-5678
+      </div>
+    </div>
+  </nav>
+
+  <!-- ── ページ本体 ── -->
+  <div class="page-body">
+    <div class="main-content">
+
+      <!-- Hero Webパーツ -->
+      <div class="hero-wp">
+        <div class="hero-img-overlay"></div>
+        <div class="hero-gold-accent"></div>
+        <div class="hero-content">
+          <div class="hero-eyebrow">今月の重点研修</div>
+          <div class="hero-title">医療法人開拓の最新事例と<br>提案手法</div>
+          <div class="hero-desc">最新の成功事例から学ぶ、提案力強化のポイント</div>
+          <button class="hero-cta">今すぐ視聴する</button>
+        </div>
+        <div class="hero-dots">
+          <div class="hero-dot active"></div>
+          <div class="hero-dot"></div>
+          <div class="hero-dot"></div>
+        </div>
+      </div>
+
+      <!-- 研修一覧セクション（白背景） -->
+      <div class="section-white">
+        <div class="section-heading">研修一覧（全18件）</div>
+        <div class="section-sub">タイトルをクリックすると動画・アンケートページへ移動します</div>
+        <div class="section-divider"></div>
+
+        <!-- Lists ビュー切り替え（実機の標準ドロップダウン） -->
+        <div class="list-filter-bar">
+          <span class="list-filter-label">表示：</span>
+          <select class="list-filter-select">
+            <option>すべて</option>
+            <option>必須研修のみ</option>
+            <option>提案力強化</option>
+            <option>医療法人攻略</option>
+          </select>
+          <span class="list-filter-label" style="margin-left:12px;">並び順：</span>
+          <select class="list-filter-select">
+            <option>番号順</option>
+            <option>新着順</option>
+            <option>カテゴリ順</option>
+          </select>
+        </div>
+
+        <!-- Lists ギャラリービュー（実機再現）-->
+        <div class="gallery-grid">
+
+          <!-- Card 01 -->
+          <div class="gallery-card">
+            <div class="gallery-thumb t1">
+              <div class="gallery-thumb-inner">🏙</div>
+            </div>
+            <div class="gallery-card-body">
+              <div class="gallery-card-category">
+                01｜提案力強化
+                <span class="gallery-card-required">必須</span>
+              </div>
+              <a class="gallery-card-title" href="#">法人営業の基礎と心構え</a>
+              <div class="gallery-card-meta">⏱ 15分</div>
+            </div>
+          </div>
+
+          <!-- Card 02 -->
+          <div class="gallery-card">
+            <div class="gallery-thumb t2">
+              <div class="gallery-thumb-inner">🤝</div>
+            </div>
+            <div class="gallery-card-body">
+              <div class="gallery-card-category">
+                02｜提案力強化
+                <span class="gallery-card-required">必須</span>
+              </div>
+              <a class="gallery-card-title" href="#">新規開拓のプロセスと実践</a>
+              <div class="gallery-card-meta">⏱ 18分</div>
+            </div>
+          </div>
+
+          <!-- Card 03 -->
+          <div class="gallery-card">
+            <div class="gallery-thumb t3">
+              <div class="gallery-thumb-inner">📊</div>
+            </div>
+            <div class="gallery-card-body">
+              <div class="gallery-card-category">03｜提案力強化</div>
+              <a class="gallery-card-title" href="#">提案資料の作り方</a>
+              <div class="gallery-card-meta">⏱ 20分</div>
+            </div>
+          </div>
+
+          <!-- Card 04 -->
+          <div class="gallery-card">
+            <div class="gallery-thumb t4">
+              <div class="gallery-thumb-inner">🏥</div>
+            </div>
+            <div class="gallery-card-body">
+              <div class="gallery-card-category">
+                04｜医療法人攻略
+                <span class="gallery-card-required">必須</span>
+              </div>
+              <a class="gallery-card-title" href="#">医療法人の基礎知識</a>
+              <div class="gallery-card-meta">⏱ 17分</div>
+            </div>
+          </div>
+
+          <!-- Card 05 -->
+          <div class="gallery-card">
+            <div class="gallery-thumb t5">
+              <div class="gallery-thumb-inner">💼</div>
+            </div>
+            <div class="gallery-card-body">
+              <div class="gallery-card-category">
+                05｜医療法人攻略
+                <span class="gallery-card-required">必須</span>
+              </div>
+              <a class="gallery-card-title" href="#">医療法人への提案ステップ</a>
+              <div class="gallery-card-meta">⏱ 19分</div>
+            </div>
+          </div>
+
+          <!-- Card 06 -->
+          <div class="gallery-card">
+            <div class="gallery-thumb t6">
+              <div class="gallery-thumb-inner">📋</div>
+            </div>
+            <div class="gallery-card-body">
+              <div class="gallery-card-category">06｜医療法人攻略</div>
+              <a class="gallery-card-title" href="#">決算書の読み方（医療法人編）</a>
+              <div class="gallery-card-meta">⏱ 16分</div>
+            </div>
+          </div>
+
+        </div>
+        <!-- ↓ Lists 標準の「すべて表示」リンク -->
+        <div style="margin-top:16px;">
+          <a href="#" style="font-size:13px;color:#0078d4;text-decoration:none;">
+            すべての研修を表示する（18件）→
+          </a>
+        </div>
+      </div>
+
+      <!-- 今週のおすすめ（News Webパーツ）-->
+      <div class="section-gray">
+        <div class="section-heading">今週のおすすめ情報</div>
+        <div class="section-sub">営業推進部からのおすすめコンテンツ</div>
+        <div class="section-divider"></div>
+        <div class="news-grid">
+          <div class="news-card">
+            <div class="news-thumb tn1">📁</div>
+            <div class="news-body">
+              <div class="news-category">事例</div>
+              <div class="news-title">大型案件の受注事例</div>
+              <div class="news-date">2026年5月14日</div>
+            </div>
+          </div>
+          <div class="news-card">
+            <div class="news-thumb tn2">💡</div>
+            <div class="news-body">
+              <div class="news-category">ノウハウ</div>
+              <div class="news-title">提案トークのコツ</div>
+              <div class="news-date">2026年5月12日</div>
+            </div>
+          </div>
+          <div class="news-card">
+            <div class="news-thumb tn3">📰</div>
+            <div class="news-body">
+              <div class="news-category">情報</div>
+              <div class="news-title">税制改正のポイント（2026年度）</div>
+              <div class="news-date">2026年5月10日</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /main-content -->
+
+    <!-- ══ 右サイドバー ══ -->
+    <aside class="right-sidebar">
+
+      <!-- お知らせ（News Webパーツ・コンパクトリスト） -->
+      <div class="sidebar-wp">
+        <div class="sidebar-wp-title">
+          お知らせ
+          <a href="#" class="sidebar-wp-link">すべて見る</a>
+        </div>
+        <div class="news-list-item">
+          <div class="news-list-thumb">📢</div>
+          <div class="news-list-body">
+            <div class="news-list-title">
+              <span class="badge-new">NEW</span>税制改正に関する研修を公開
+            </div>
+            <div class="news-list-date">2026/05/14</div>
+          </div>
+        </div>
+        <div class="news-list-item">
+          <div class="news-list-thumb">📚</div>
+          <div class="news-list-body">
+            <div class="news-list-title">
+              <span class="badge-new">NEW</span>医療法人攻略シリーズを追加
+            </div>
+            <div class="news-list-date">2026/05/10</div>
+          </div>
+        </div>
+        <div class="news-list-item">
+          <div class="news-list-thumb">📋</div>
+          <div class="news-list-body">
+            <div class="news-list-title">5月の必須研修を更新しました</div>
+            <div class="news-list-date">2026/05/01</div>
+          </div>
+        </div>
+        <div class="news-list-item">
+          <div class="news-list-thumb">📌</div>
+          <div class="news-list-body">
+            <div class="news-list-title">相続・事業承継研修を追加</div>
+            <div class="news-list-date">2026/04/25</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 人気研修TOP3（Quick Links・リスト形式） -->
+      <div class="sidebar-wp">
+        <div class="sidebar-wp-title">人気研修 TOP3</div>
+        <div class="quicklinks-item">
+          <div class="quicklinks-rank rank-1">1</div>
+          <div class="quicklinks-text">医療法人開拓の最新事例</div>
+        </div>
+        <div class="quicklinks-item">
+          <div class="quicklinks-rank rank-2">2</div>
+          <div class="quicklinks-text">提案トーク実践トレーニング</div>
+        </div>
+        <div class="quicklinks-item">
+          <div class="quicklinks-rank rank-3">3</div>
+          <div class="quicklinks-text">決算書の読み方（医療法人編）</div>
+        </div>
+      </div>
+
+      <!-- FAQ（Highlighted Content・リスト形式） -->
+      <div class="sidebar-wp">
+        <div class="sidebar-wp-title">
+          よくある質問
+          <a href="#" class="sidebar-wp-link">すべて見る</a>
+        </div>
+        <div class="faq-item">
+          動画が再生できない場合は？<span class="faq-arrow">›</span>
+        </div>
+        <div class="faq-item">
+          アンケートの提出方法は？<span class="faq-arrow">›</span>
+        </div>
+        <div class="faq-item">
+          スマートフォンでも視聴できますか？<span class="faq-arrow">›</span>
+        </div>
+      </div>
+
+    </aside>
+  </div><!-- /page-body -->
+</div><!-- /layout -->
+
+<!-- ══ 凡例（制作メモ） ══ -->
+<div class="legend-bar">
+  <strong>📋 SharePoint実機再現モック v2</strong>
+  <span>✅ Lists ギャラリービュー（バッジなし・タイトルリンクのみ）</span>
+  <span>✅ フィルターはドロップダウンのみ</span>
+  <span>✅ 進捗円グラフ・期限・未完了アラート = 削除済み</span>
+  <span>✅ M365スイートバー・サイトヘッダー再現</span>
+</div>
+
+</body>
+</html>

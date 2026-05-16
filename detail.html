@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>法人営業の基礎と心構え｜法人営業ナレッジポータル</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Segoe UI', 'Yu Gothic UI', 'Meiryo', sans-serif;
+    background: #f3f2f1;
+    color: #201f1e;
+    font-size: 14px;
+    line-height: 1.5;
+  }
+
+  /* ══ M365 スイートバー ══ */
+  .suite-bar {
+    height: 48px;
+    background: #1b1a19;
+    display: flex;
+    align-items: center;
+    padding: 0 12px;
+    gap: 8px;
+  }
+  .suite-waffle {
+    width: 32px; height: 32px;
+    display: grid;
+    grid-template-columns: repeat(3,7px);
+    gap: 2px; padding: 7px; cursor: pointer;
+  }
+  .suite-waffle span { background: #c8c6c4; border-radius: 1px; display: block; }
+  .suite-logo { color: #c8c6c4; font-size: 13px; font-weight: 600; margin-left: 4px; }
+  .suite-logo em { color: #c79a42; font-style: normal; }
+  .suite-search {
+    margin-left: auto; margin-right: 8px;
+    display: flex; align-items: center;
+    background: #3b3a39; border-radius: 4px;
+    padding: 5px 12px; gap: 8px;
+    color: #c8c6c4; font-size: 13px; min-width: 220px;
+  }
+  .suite-icons { display: flex; align-items: center; gap: 4px; color: #c8c6c4; font-size: 16px; }
+  .suite-icons span { width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; border-radius: 4px; cursor: pointer; }
+  .suite-avatar {
+    width: 32px; height: 32px; border-radius: 50%;
+    background: linear-gradient(135deg, #c79a42, #a07830);
+    display: flex; align-items: center; justify-content: center;
+    color: white; font-size: 12px; font-weight: 700; cursor: pointer; margin-left: 4px;
+  }
+
+  /* ══ サイトヘッダー ══ */
+  .site-header {
+    background: #ffffff;
+    border-bottom: 1px solid #edebe9;
+    padding: 0 24px;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .site-logo {
+    width: 36px; height: 36px;
+    background: #c79a42; border-radius: 4px;
+    display: flex; align-items: center; justify-content: center;
+    color: white; font-size: 18px; flex-shrink: 0;
+  }
+  .site-name { font-size: 16px; font-weight: 600; color: #201f1e; }
+
+  /* ══ レイアウト ══ */
+  .layout { display: flex; min-height: calc(100vh - 104px); }
+
+  /* ── 左ナビ ── */
+  .left-nav {
+    width: 208px; flex-shrink: 0;
+    background: #ffffff; border-right: 1px solid #edebe9;
+    padding: 8px 0; display: flex; flex-direction: column;
+  }
+  .nav-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 8px 16px; font-size: 14px; color: #605e5c;
+    cursor: pointer; border-left: 3px solid transparent; min-height: 36px;
+  }
+  .nav-item:hover { background: #f3f2f1; color: #201f1e; }
+  .nav-item.active { color: #c79a42; border-left-color: #c79a42; background: #fdf7ed; font-weight: 600; }
+  .nav-icon { width: 16px; text-align: center; font-size: 14px; flex-shrink: 0; }
+  .nav-divider { height: 1px; background: #edebe9; margin: 8px 0; }
+  .nav-bottom { margin-top: auto; border-top: 1px solid #edebe9; padding: 12px 16px; font-size: 12px; color: #605e5c; }
+  .nav-bottom-name { font-weight: 600; color: #201f1e; font-size: 13px; margin-bottom: 2px; }
+
+  /* ══ メインコンテンツ（1カラム・中央寄せ）══
+     ※ SharePoint コミュニケーションサイトの
+       「単一列レイアウト」を正確に再現。
+       最大幅 960px・中央揃えが実機の標準。     */
+  .page-main {
+    flex: 1;
+    background: #ffffff;
+    min-width: 0;
+  }
+
+  /* ── パンくずリスト ──
+     ※ SharePoint 実機にある標準パンくず */
+  .breadcrumb {
+    padding: 12px 48px 0;
+    font-size: 13px;
+    color: #605e5c;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .breadcrumb a {
+    color: #0078d4;
+    text-decoration: none;
+  }
+  .breadcrumb a:hover { text-decoration: underline; }
+  .breadcrumb-sep { color: #c8c6c4; }
+
+  /* ── ページタイトルエリア ──
+     ※ SharePoint ページ上部のタイトルWebパーツ */
+  .page-title-area {
+    padding: 20px 48px 24px;
+    border-bottom: 1px solid #edebe9;
+  }
+  .page-title {
+    font-size: 28px;
+    font-weight: 700;
+    color: #201f1e;
+    margin-bottom: 10px;
+    line-height: 1.3;
+  }
+  /* メタ情報：Lists からのフィールド値をテキストWebパーツで表示 */
+  .page-meta {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  .meta-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 13px;
+    background: #f3f2f1;
+    padding: 3px 10px;
+    border-radius: 2px;
+    color: #605e5c;
+  }
+  .meta-tag.required {
+    background: #fdf2d0;
+    color: #c79a42;
+    font-weight: 700;
+  }
+
+  /* ══ コンテンツセクション ══ */
+  .content-sections {
+    max-width: 840px;
+    margin: 0 auto;
+    padding: 32px 48px 48px;
+  }
+
+  /* セクション間スペース */
+  .wp-section { margin-bottom: 40px; }
+
+  /* セクション見出し（Text Webパーツ H2相当） */
+  .wp-heading {
+    font-size: 18px;
+    font-weight: 700;
+    color: #201f1e;
+    margin-bottom: 16px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid #c79a42;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  /* ══ 動画プレーヤー（Stream Webパーツ）══
+     ※ 実機：Microsoft Stream の動画を
+       iframeで埋め込み。16:9固定。
+       プレーヤーUIはStreamが自動生成。     */
+  .stream-player-wrap {
+    position: relative;
+    width: 100%;
+    padding-top: 56.25%; /* 16:9 */
+    background: #000;
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .stream-player-inner {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, #1a2030, #2a3040);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+  }
+  /* Stream プレーヤーの擬似UI */
+  .stream-thumbnail-content {
+    text-align: center;
+    color: rgba(255,255,255,0.6);
+    font-size: 13px;
+  }
+  .stream-play-btn {
+    width: 64px; height: 64px;
+    background: rgba(199,154,66,0.9);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 24px; color: white; cursor: pointer;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.4);
+    margin-bottom: 8px;
+  }
+  .stream-play-btn:hover { background: #c79a42; }
+  .stream-title-overlay {
+    font-size: 16px;
+    font-weight: 600;
+    color: white;
+    margin-bottom: 4px;
+  }
+  /* Streamプレーヤーバー（実機風） */
+  .stream-controls {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    background: linear-gradient(transparent, rgba(0,0,0,0.8));
+    padding: 16px 16px 12px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .stream-ctrl-btn { color: white; font-size: 16px; cursor: pointer; }
+  .stream-progress {
+    flex: 1; height: 3px; background: rgba(255,255,255,0.3);
+    border-radius: 2px; position: relative;
+  }
+  .stream-progress-fill {
+    height: 100%; width: 0%; background: #c79a42; border-radius: 2px;
+  }
+  .stream-time { color: rgba(255,255,255,0.8); font-size: 12px; white-space: nowrap; }
+  .stream-logo {
+    position: absolute;
+    top: 12px; right: 12px;
+    background: rgba(0,0,0,0.5);
+    color: rgba(255,255,255,0.7);
+    font-size: 11px;
+    padding: 3px 8px;
+    border-radius: 2px;
+  }
+
+  /* ══ ゴールドセパレーター ══
+     ※ テキストWebパーツで水平線を挿入 */
+  .gold-separator {
+    height: 1px;
+    background: linear-gradient(to right, #c79a42, #e8d5a3, #c79a42);
+    margin: 36px 0;
+    opacity: 0.6;
+  }
+
+  /* ══ Forms 埋め込みエリア（Forms Webパーツ）══
+     ※ 実機：Microsoft Forms を iframe で埋め込み。
+       Formsのデザインはシステム固定（変更不可）。
+       白背景・標準フォント・標準ボタン色。       */
+  .forms-embed {
+    background: #ffffff;
+    border: 1px solid #edebe9;
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  /* Formsのヘッダー（実機に近い色） */
+  .forms-header {
+    background: #c79a42;
+    padding: 20px 24px 16px;
+  }
+  .forms-header-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: #ffffff;
+    margin-bottom: 4px;
+  }
+  .forms-header-sub {
+    font-size: 13px;
+    color: rgba(255,255,255,0.85);
+  }
+  .forms-body { padding: 24px; }
+
+  /* Forms の各質問ブロック */
+  .forms-question {
+    margin-bottom: 24px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid #f3f2f1;
+  }
+  .forms-question:last-child { border-bottom: none; margin-bottom: 0; }
+  .forms-q-label {
+    font-size: 14px;
+    font-weight: 600;
+    color: #201f1e;
+    margin-bottom: 10px;
+  }
+  .forms-q-label .required-mark { color: #d13438; margin-left: 4px; }
+
+  /* ラジオボタン（Formsの選択肢標準UI） */
+  .forms-radio-group { display: flex; flex-direction: column; gap: 10px; }
+  .forms-radio-item {
+    display: flex; align-items: center; gap: 10px;
+    font-size: 14px; color: #201f1e; cursor: pointer;
+  }
+  .forms-radio {
+    width: 18px; height: 18px;
+    border: 2px solid #8a8886; border-radius: 50%;
+    flex-shrink: 0; display: flex; align-items: center; justify-content: center;
+  }
+  .forms-radio.selected { border-color: #c79a42; }
+  .forms-radio.selected::after {
+    content: ''; width: 8px; height: 8px;
+    border-radius: 50%; background: #c79a42;
+  }
+
+  /* テキストエリア（Forms標準） */
+  .forms-textarea {
+    width: 100%;
+    height: 80px;
+    border: 1px solid #8a8886;
+    border-radius: 2px;
+    padding: 8px 10px;
+    font-size: 14px;
+    font-family: inherit;
+    color: #201f1e;
+    resize: vertical;
+  }
+  .forms-textarea:focus { outline: none; border-color: #c79a42; }
+
+  /* 星評価（Forms の評価スケール） */
+  .forms-stars { display: flex; gap: 8px; }
+  .forms-star { font-size: 24px; cursor: pointer; color: #edebe9; }
+  .forms-star.on { color: #c79a42; }
+
+  /* Forms 送信ボタン（実機のデザインに近い） */
+  .forms-submit-area { padding: 16px 24px; background: #faf9f8; text-align: right; }
+  .forms-submit-btn {
+    background: #c79a42;
+    color: white;
+    border: none;
+    padding: 10px 28px;
+    font-size: 14px;
+    font-weight: 600;
+    border-radius: 2px;
+    cursor: pointer;
+    font-family: inherit;
+  }
+  .forms-submit-btn:hover { background: #a07830; }
+
+  /* ══ 関連資料（Quick Links Webパーツ）══
+     ※ 実機：コンパクトリスト形式 */
+  .quicklinks-list { display: flex; flex-direction: column; gap: 2px; }
+  .ql-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 12px;
+    background: #f3f2f1;
+    border-radius: 2px;
+    cursor: pointer;
+    text-decoration: none;
+  }
+  .ql-item:hover { background: #edebe9; }
+  .ql-icon {
+    width: 32px; height: 32px;
+    background: #ffffff;
+    border-radius: 2px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px; flex-shrink: 0;
+    border: 1px solid #edebe9;
+  }
+  .ql-text { flex: 1; }
+  .ql-title { font-size: 14px; font-weight: 600; color: #0078d4; }
+  .ql-desc { font-size: 12px; color: #605e5c; margin-top: 1px; }
+  .ql-arrow { color: #8a8886; font-size: 14px; }
+
+  /* 凡例 */
+  .legend-bar {
+    background: #fff4ce;
+    border-top: 2px solid #c79a42;
+    padding: 10px 40px;
+    font-size: 12px;
+    color: #605e5c;
+    display: flex; flex-wrap: wrap; gap: 16px; align-items: center;
+  }
+  .legend-bar strong { color: #201f1e; }
+</style>
+</head>
+<body>
+
+<!-- M365 スイートバー -->
+<div class="suite-bar">
+  <div class="suite-waffle">
+    <span></span><span></span><span></span>
+    <span></span><span></span><span></span>
+    <span></span><span></span><span></span>
+  </div>
+  <div class="suite-logo">Microsoft <em>365</em></div>
+  <div class="suite-search">🔍 &nbsp;このサイトを検索</div>
+  <div class="suite-icons">
+    <span>💬</span><span>🔔</span><span>⚙</span><span>?</span>
+  </div>
+  <div class="suite-avatar">田</div>
+</div>
+
+<!-- サイトヘッダー -->
+<div class="site-header">
+  <div class="site-logo">⬡</div>
+  <div class="site-name">法人営業ナレッジポータル</div>
+</div>
+
+<div class="layout">
+
+  <!-- 左ナビ -->
+  <nav class="left-nav">
+    <div class="nav-item"><span class="nav-icon">🏠</span>ホーム</div>
+    <div class="nav-item active"><span class="nav-icon">⭐</span>今月の必須研修</div>
+    <div class="nav-item"><span class="nav-icon">📈</span>提案力強化</div>
+    <div class="nav-item"><span class="nav-icon">🏥</span>医療法人攻略</div>
+    <div class="nav-item"><span class="nav-icon">👥</span>相続・事業承継</div>
+    <div class="nav-divider"></div>
+    <div class="nav-item"><span class="nav-icon">🛡</span>コンプライアンス</div>
+    <div class="nav-item"><span class="nav-icon">👔</span>管理職向け</div>
+    <div class="nav-divider"></div>
+    <div class="nav-item"><span class="nav-icon">☰</span>全研修一覧</div>
+    <div class="nav-item"><span class="nav-icon">❓</span>FAQ</div>
+    <div class="nav-item"><span class="nav-icon">✉</span>お問い合わせ</div>
+    <div class="nav-bottom">
+      <div class="nav-bottom-name">研修担当</div>
+      <div style="font-size:12px;color:#605e5c;line-height:1.8;">
+        営業推進部<br>training@company.co.jp<br>03-1234-5678
+      </div>
+    </div>
+  </nav>
+
+  <!-- メインページ -->
+  <div class="page-main">
+
+    <!-- パンくず -->
+    <div class="breadcrumb">
+      <a href="index.html">🏠 ホーム</a>
+      <span class="breadcrumb-sep">›</span>
+      <a href="index.html">研修一覧</a>
+      <span class="breadcrumb-sep">›</span>
+      <span>法人営業の基礎と心構え</span>
+    </div>
+
+    <!-- ページタイトル -->
+    <div class="page-title-area">
+      <div class="page-title">法人営業の基礎と心構え</div>
+      <div class="page-meta">
+        <span class="meta-tag">⏱ 15分</span>
+        <span class="meta-tag required">★ 必須研修</span>
+        <span class="meta-tag">📂 提案力強化</span>
+      </div>
+    </div>
+
+    <!-- コンテンツ本体 -->
+    <div class="content-sections">
+
+      <!-- ① Stream 動画 Webパーツ -->
+      <div class="wp-section">
+        <div class="wp-heading">🎬 研修動画</div>
+        <div class="stream-player-wrap">
+          <div class="stream-player-inner">
+            <div class="stream-play-btn">▶</div>
+            <div class="stream-thumbnail-content">
+              <div class="stream-title-overlay">法人営業の基礎と心構え</div>
+              <div>クリックして再生 ／ Microsoft Stream</div>
+            </div>
+          </div>
+          <!-- Streamプレーヤーバー -->
+          <div class="stream-controls">
+            <span class="stream-ctrl-btn">▶</span>
+            <div class="stream-progress">
+              <div class="stream-progress-fill"></div>
+            </div>
+            <span class="stream-time">0:00 / 15:00</span>
+            <span class="stream-ctrl-btn">🔊</span>
+            <span class="stream-ctrl-btn">⛶</span>
+          </div>
+          <div class="stream-logo">Microsoft Stream</div>
+        </div>
+      </div>
+
+      <!-- ゴールドセパレーター -->
+      <div class="gold-separator"></div>
+
+      <!-- ② Forms アンケート Webパーツ -->
+      <div class="wp-section">
+        <div class="wp-heading">📝 視聴後アンケート</div>
+        <p style="font-size:13px;color:#605e5c;margin-bottom:16px;">
+          動画をご覧いただいた後、学習効果向上のため以下のアンケートにお答えください。
+        </p>
+
+        <div class="forms-embed">
+          <!-- Forms ヘッダー（実機のカラーバー） -->
+          <div class="forms-header">
+            <div class="forms-header-title">法人営業の基礎と心構え｜視聴後アンケート</div>
+            <div class="forms-header-sub">ご回答いただいた内容は研修改善に活用いたします</div>
+          </div>
+
+          <!-- Forms 本体 -->
+          <div class="forms-body">
+
+            <!-- Q1：ラジオボタン -->
+            <div class="forms-question">
+              <div class="forms-q-label">
+                1. 動画の内容は理解できましたか？
+                <span class="required-mark">*</span>
+              </div>
+              <div class="forms-radio-group">
+                <label class="forms-radio-item">
+                  <div class="forms-radio selected"><div></div></div>
+                  非常によく理解できた
+                </label>
+                <label class="forms-radio-item">
+                  <div class="forms-radio"></div>
+                  理解できた
+                </label>
+                <label class="forms-radio-item">
+                  <div class="forms-radio"></div>
+                  普通
+                </label>
+                <label class="forms-radio-item">
+                  <div class="forms-radio"></div>
+                  やや難しかった
+                </label>
+              </div>
+            </div>
+
+            <!-- Q2：テキストエリア -->
+            <div class="forms-question">
+              <div class="forms-q-label">
+                2. 今回の研修で最も参考になったポイントをお聞かせください
+              </div>
+              <textarea class="forms-textarea" placeholder="自由にご記入ください"></textarea>
+            </div>
+
+            <!-- Q3：星評価 -->
+            <div class="forms-question">
+              <div class="forms-q-label">
+                3. 今後の業務に活用できそうですか？
+                <span class="required-mark">*</span>
+              </div>
+              <div style="font-size:12px;color:#605e5c;margin-bottom:8px;">
+                1（あまり活用できない）〜 5（非常に活用できる）
+              </div>
+              <div class="forms-stars">
+                <span class="forms-star on">★</span>
+                <span class="forms-star on">★</span>
+                <span class="forms-star on">★</span>
+                <span class="forms-star on">★</span>
+                <span class="forms-star">★</span>
+              </div>
+            </div>
+
+          </div><!-- /forms-body -->
+
+          <!-- Forms 送信ボタン -->
+          <div class="forms-submit-area">
+            <button class="forms-submit-btn">アンケートを送信</button>
+          </div>
+        </div><!-- /forms-embed -->
+      </div>
+
+      <!-- ゴールドセパレーター -->
+      <div class="gold-separator"></div>
+
+      <!-- ③ 関連資料（Quick Links Webパーツ） -->
+      <div class="wp-section">
+        <div class="wp-heading">💡 関連資料・補足情報</div>
+        <div class="quicklinks-list">
+          <a href="#" class="ql-item">
+            <div class="ql-icon">📄</div>
+            <div class="ql-text">
+              <div class="ql-title">営業トーク集（PDF）</div>
+              <div class="ql-desc">本研修で紹介したトーク例をまとめたPDFです</div>
+            </div>
+            <span class="ql-arrow">›</span>
+          </a>
+          <a href="#" class="ql-item">
+            <div class="ql-icon">🔗</div>
+            <div class="ql-text">
+              <div class="ql-title">社内FAQ：よくある営業課題への対処法</div>
+              <div class="ql-desc">実務でよく出る質問と回答をまとめたページです</div>
+            </div>
+            <span class="ql-arrow">›</span>
+          </a>
+          <a href="#" class="ql-item">
+            <div class="ql-icon">📊</div>
+            <div class="ql-text">
+              <div class="ql-title">提案書テンプレート集</div>
+              <div class="ql-desc">すぐ使えるWord・PowerPointのテンプレートです</div>
+            </div>
+            <span class="ql-arrow">›</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- 一覧に戻る -->
+      <div style="margin-top:32px;padding-top:24px;border-top:1px solid #edebe9;">
+        <a href="index.html" style="font-size:14px;color:#0078d4;text-decoration:none;display:inline-flex;align-items:center;gap:6px;">
+          ← 研修一覧に戻る
+        </a>
+      </div>
+
+    </div><!-- /content-sections -->
+  </div><!-- /page-main -->
+</div><!-- /layout -->
+
+<!-- 凡例 -->
+<div class="legend-bar">
+  <strong>📋 研修詳細ページ（SharePoint実機再現）</strong>
+  <span>✅ Stream Webパーツ（iframeで動画埋め込み）</span>
+  <span>✅ Forms Webパーツ（iframeでアンケート埋め込み）</span>
+  <span>✅ Quick Links（関連資料リスト）</span>
+  <span>✅ ボタンは「送信」のみ。カスタムCSSなし。</span>
+</div>
+
+</body>
+</html>
